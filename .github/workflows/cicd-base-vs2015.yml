@@ -1,0 +1,26 @@
+---
+name: CI/CD for master
+on:
+  push:
+    branches:
+    - master
+    - WIP
+    pathes:
+    - 'docker/windows/base-vs2015/**'
+jobs:
+  build-base-vs2015:
+    name: Build base-vs2015 docker image
+    runs-on: self-hosted
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@master
+      with:
+        fetch-depth: 1
+    - name: Build Windows base-vs2015 docker image
+      env:
+        GIT_REF: ${{ github.ref }}
+        DOCKER_IMAGE_NAME: ultimaker/cura-build-environment
+        DOCKER_IO: docker.io
+        DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      run: .github/workflows/build-base-vs2015.ps1
